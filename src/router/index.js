@@ -3,6 +3,8 @@ import Login from "@/views/Login"
 import MainPage from "@/views/MainPage";
 import Register from "@/views/Register";
 import ForgetPwd from "@/views/ForgetPwd";
+import About from "@/views/About";
+import Publish from "@/views/Publish";
 
 const routes = [
     {
@@ -32,6 +34,20 @@ const routes = [
             title: '忘记密码'
         },
         component: ForgetPwd,
+    },
+    {
+        path: '/about',
+        meta: {
+            title: '关于我们'
+        },
+        component: About,
+    },
+    {
+        path: '/publish',
+        meta: {
+            title: '博客发布'
+        },
+        component: Publish,
     },
 ];
 const router = createRouter({

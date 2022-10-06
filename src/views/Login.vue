@@ -111,4 +111,8 @@ export default {
   margin-top: 25px;
   height: 40px;
 }
+a {
+  text-decoration: none;
+  color: #000;
+}
 </style>
