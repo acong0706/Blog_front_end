@@ -3,8 +3,11 @@ import Login from "@/views/Login"
 import MainPage from "@/views/MainPage";
 import Register from "@/views/Register";
 import ForgetPwd from "@/views/ForgetPwd";
-import About from "@/views/About";
-import Publish from "@/views/Publish";
+import About from "@/components/About";
+import Publish from "@/components/Publish";
+import mainContent from "@/components/mainContent";
+import Message from "@/components/Message";
+import History from "@/components/History";
 
 const routes = [
     {
@@ -13,6 +16,40 @@ const routes = [
             title: 'Cong的博客'
         },
         component: MainPage,
+        children: [
+            {
+                path: '/',
+                component: mainContent,
+            },
+            {
+                path: '/message',
+                meta: {
+                    title: '我的消息'
+                },
+                component: Message,
+            },
+            {
+                path: '/about',
+                meta: {
+                    title: '关于我们'
+                },
+                component: About,
+            },
+            {
+                path: '/publish',
+                meta: {
+                    title: '博客发布'
+                },
+                component: Publish,
+            },
+            {
+                path: '/history',
+                meta: {
+                    title: '足迹'
+                },
+                component: History,
+            },
+        ]
     },
     {
         path: '/login',
@@ -34,20 +71,6 @@ const routes = [
             title: '忘记密码'
         },
         component: ForgetPwd,
-    },
-    {
-        path: '/about',
-        meta: {
-            title: '关于我们'
-        },
-        component: About,
-    },
-    {
-        path: '/publish',
-        meta: {
-            title: '博客发布'
-        },
-        component: Publish,
     },
 ];
 const router = createRouter({

@@ -6,14 +6,10 @@
           <main-header/>
         </el-affix>
       </el-header>
-      <el-main style="background-color: #b2dce3;">
-        <main-content/>
-        <main-content/>
-        <main-content/>
-        <main-content/>
-        <main-content/>
-        <main-content/>
-        <main-content/>
+      <el-main id="mainOfMainPage">
+        <div id="contentOfMainPage">
+          <router-view></router-view>
+        </div>
       </el-main>
     </el-container>
   </div>
@@ -21,16 +17,27 @@
 
 <script>
 import mainHeader from "@/components/mainHeader";
-import mainContent from "@/components/mainContent";
 
 export default {
   name: 'HelloWorld',
-  components: { mainHeader, mainContent },
+  components: { mainHeader },
 }
 </script>
 
 <style>
 #headerOfMainPage {
-  padding: 0;height: auto;
+  padding: 0;
+  height: auto;
+}
+#mainOfMainPage {
+  padding: 0;
+  background-color: #cfe8ec;
+  display: flex;
+  justify-content: center;
+  /*height: 500px;*/
+}
+#contentOfMainPage {
+  width: 80%;
+  background-color: #6dcede;
 }
 </style>
