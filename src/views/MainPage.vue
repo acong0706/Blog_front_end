@@ -37,6 +37,8 @@ export default {
   /*height: 500px;*/
 }
 #contentOfMainPage {
+  margin-top: 15px;
+  /*margin-bottom: 10px;*/
   width: 80%;
   background-color: #6dcede;
 }

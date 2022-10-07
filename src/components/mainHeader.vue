@@ -15,7 +15,7 @@
           </template>
         </el-input>
       </el-col>
-      <el-col :span="9" style="padding-right: 30px">
+      <el-col :span="9" style="padding-right: 10px">
         <el-row :gutter="15" justify="end">
           <el-col :span="3" v-if="loginOrNot">
             <el-dropdown>
@@ -29,7 +29,7 @@
               </template>
             </el-dropdown>
           </el-col>
-          <el-col :span="4" v-if="!loginOrNot" class="headerRight">
+          <el-col :span="5" v-if="!loginOrNot" class="headerRight">
             <a href="/login">登录/注册</a>
           </el-col>
           <el-col :span="3" v-if="loginOrNot" class="headerRight">
@@ -62,7 +62,7 @@
           <el-col :span="3" class="headerRight">
             <a href="/about">关于</a>
           </el-col>
-          <el-col :span="3">
+          <el-col :span="4">
             <el-button @click="publish" type="primary">发布</el-button>
           </el-col>
         </el-row>
