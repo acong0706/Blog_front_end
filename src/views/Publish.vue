@@ -9,11 +9,9 @@
       <el-main id="mainOfMainPage">
         <div id="contentOfMainPage">
           <el-row>
-            <el-col :span="16">
-              <router-view></router-view>
-            </el-col>
-            <el-col :span="7" :offset="1">
-              <Aside></Aside>
+            <el-col :span="24">
+              <h1>博客发布</h1>
+              <v-md-editor v-model="value" height="580px"></v-md-editor>
             </el-col>
           </el-row>
         </div>
@@ -24,15 +22,19 @@
 
 <script>
 import mainHeader from "@/components/mainHeader";
-import Aside from "@/components/Aside";
 
 export default {
-  name: 'MainPage',
-  components: { mainHeader, Aside },
+  name: "Publish",
+  components: { mainHeader},
+  data() {
+    return {
+      value: '',
+    }
+  },
 }
 </script>
 
-<style>
+<style scoped>
 #headerOfMainPage {
   padding: 0;
   height: auto;

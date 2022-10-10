@@ -1,12 +1,11 @@
 <template>
-  <el-card class="box-card">
-    <template #header>
-      <div class="card-header">
-        <span>Card name</span>
-        <el-button class="button" text>Operation button</el-button>
-      </div>
-    </template>
-    <div v-for="o in 4" :key="o" class="text item">{{ 'List item ' + o }}</div>
+  <el-card v-for="item in 10">
+    <h1 style="margin-bottom: 5px;cursor: pointer;">
+      <a @click="goBlogPage(item)">题目{{ item }}</a>
+    </h1>
+    <label style="cursor: pointer;">
+      <a @click="goBlogPage(item)">测试{{ item }}</a>
+    </label>
   </el-card>
 </template>
 
@@ -21,26 +20,12 @@ export default {
     }
   },
   methods: {
+    goBlogPage(item) {
+      router.push({path:'/blogPage',query:{item: item}})
+    },
   },
 }
 </script>
 
 <style scoped>
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.text {
-  font-size: 14px;
-}
-
-.item {
-  margin-bottom: 18px;
-}
-
-.box-card {
-  width: 480px;
-}
 </style>

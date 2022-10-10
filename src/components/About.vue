@@ -1,5 +1,10 @@
 <template>
-  <h1>关于我们</h1>
+  <el-card>
+    <template #header>
+      <h1>关于</h1>
+    </template>
+    <label>暂无信息</label>
+  </el-card>
 </template>
 
 <script>

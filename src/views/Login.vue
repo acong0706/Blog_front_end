@@ -3,7 +3,6 @@
     <el-form id="loginBlock">
       <h1>登&nbsp;录&nbsp;页&nbsp;面</h1>
       <el-input
-          autofocus="true"
           placeholder="账号"
           class="loginInput"
           v-model="account"/>
@@ -40,6 +39,7 @@
 <script>
 import {ElMessage} from "element-plus";
 import router from "@/router";
+import axios from "axios";
 
 export default {
   name: "LoginPage",
@@ -61,13 +61,38 @@ export default {
         * 这里存在一个之前一直忽视的问题
         * 就是 token 的存在性问题
         */
-        ElMessage({
-          message: '登录成功',
-          type: 'success',
+        axios({
+          url: '/api/user/login',
+          method: 'POST',
+          params: {
+            account: this.account,
+            pwd: this.pwd
+          }
+        }).then(resp => {
+          console.log(resp)
+          if(resp.data.result) {
+            ElMessage({
+              message: '登录成功',
+              type: 'success',
+            })
+            setTimeout(function (){
+              router.push('/')
+            }, 1000)
+          } else {
+            ElMessage({
+              message: '账号或密码错误',
+              type: 'error',
+            })
+          }
         })
-        setTimeout(function (){
-          router.push('/')
-        }, 1000)
+        // ElMessage({
+        //   message: '登录成功',
+        //   type: 'success',
+        // })
+        // setTimeout(function (){
+        //   router.push('/')
+        //   // alert(resp.data.test)
+        // }, 1000)
       }
     },
     ret() {
@@ -80,7 +105,7 @@ export default {
 <style scoped>
 #loginDiv {
   padding-top: 180px;
-  background: url("../assets/sky1.jpg");
+  background: url("../assets/grass.jpg");
   background-size: 100% 100%;
   width: 100%;
   height: 100%;
@@ -105,7 +130,7 @@ export default {
   border: solid 1px rgba(102, 146, 191, 0.68);
   /*边角弧度*/
   border-radius: 15px;
-  box-shadow: 7px 15px 30px #285a63;
+  box-shadow: 7px 15px 30px #595d5d;
 }
 .loginInput {
   margin-top: 25px;

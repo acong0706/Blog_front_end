@@ -4,10 +4,11 @@ import MainPage from "@/views/MainPage";
 import Register from "@/views/Register";
 import ForgetPwd from "@/views/ForgetPwd";
 import About from "@/components/About";
-import Publish from "@/components/Publish";
+import Publish from "@/views/Publish";
 import mainContent from "@/components/mainContent";
 import Message from "@/components/Message";
 import History from "@/components/History";
+import BlogPage from "@/components/BlogPage";
 
 const routes = [
     {
@@ -31,16 +32,9 @@ const routes = [
             {
                 path: '/about',
                 meta: {
-                    title: '关于我们'
+                    title: '关于（联系）'
                 },
                 component: About,
-            },
-            {
-                path: '/publish',
-                meta: {
-                    title: '博客发布'
-                },
-                component: Publish,
             },
             {
                 path: '/history',
@@ -49,7 +43,21 @@ const routes = [
                 },
                 component: History,
             },
+            {
+                path: '/blogPage',
+                meta: {
+                    title: '某个页面'
+                },
+                component: BlogPage,
+            },
         ]
+    },
+    {
+        path: '/publish',
+        meta: {
+            title: '博客发布'
+        },
+        component: Publish,
     },
     {
         path: '/login',

@@ -9,13 +9,21 @@ import store from './store';
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import * as ElIcons from '@element-plus/icons'
+// v-md-editor
+import VMdEditor from '@kangc/v-md-editor';
+import '@kangc/v-md-editor/lib/style/base-editor.css';
+import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
+import '@kangc/v-md-editor/lib/theme/style/github.css';
 
+VMdEditor.use(githubTheme);
 
 const app = createApp(App);
 for (const [key, component] of Object.entries(ElIcons)) {
     app.component(key, component)
 }
+
 app.use(router)
     .use(store)
     .use(ElementPlus)
+    .use(VMdEditor)
     .mount('#app');
