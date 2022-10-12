@@ -113,9 +113,7 @@ export default {
 
 <style scoped>
 #mainHeadStyle {
-  /*height: 35px;*/
   padding: 11px 0;
-  background-color: #9edce7;
   text-align: center;
 }
 

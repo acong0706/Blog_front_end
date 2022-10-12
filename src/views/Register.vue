@@ -62,6 +62,8 @@ import router from "@/router"
 import axios from "axios";
 
 const TIME_COUNT = 60 // 设置一个全局的倒计时的时间
+let emailReg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
+let codeReg = /^[0-9]{6}$/
 
 export default {
   name: "Register",
@@ -93,11 +95,8 @@ export default {
       if (!value) {
         callback(new Error('邮箱不可为空'))
       } else {
-        if (value !== '') {
-          let reg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
-          if (!reg.test(value)) {
-            callback(new Error('邮箱格式不正确，请重新输入'))
-          }
+        if (!emailReg.test(value)) {
+          callback(new Error('邮箱格式不正确，请重新输入'))
         }
         callback()
       }
@@ -107,11 +106,8 @@ export default {
       if (!value) {
         callback(new Error('验证码不可为空'))
       } else {
-        if (value !== '') {
-          let reg = /^[0-9]{6}$/
-          if (!reg.test(value)) {
-            callback(new Error('请输入收到的6位随机验证码'))
-          }
+        if (!codeReg.test(value)) {
+          callback(new Error('请输入收到的6位随机验证码'))
         }
         callback()
       }
@@ -149,21 +145,50 @@ export default {
   },
   methods: {
     register() {
-      ElMessage({
-        message: '注册成功',
-        type: 'success',
-      })
-      setTimeout(function (){
-        router.push('/login')
-      }, 1000)
+      console.log(this.ruleForm)
+      if (this.ruleForm.username === '' || this.ruleForm.pwd === '' || this.ruleForm.pwd2 === '' ||
+          this.ruleForm.email === '' || this.ruleForm.code === '' || !emailReg.test(this.ruleForm.email) ||
+          !codeReg.test(this.ruleForm.code) || this.ruleForm.pwd !== this.ruleForm.pwd2) {
+        ElMessage({
+          message: '信息有误，请仔细检查填写是否正确',
+          grouping: true,
+        })
+      } else {
+        axios({
+          url: '/api/user/register',
+          method: 'POST',
+          params: {
+            username: this.ruleForm.username,
+            pwd: this.ruleForm.pwd,
+            email: this.ruleForm.email,
+            code: this.ruleForm.code
+          }
+        }).then(resp => {
+          console.log(resp)
+          if (resp.data.result) {
+            ElMessage({
+              message: resp.data.msg,
+              type: 'success',
+              showClose: true,
+              duration: 0
+            })
+            router.push('/login')
+          } else {
+            ElMessage({
+              message: resp.data.msg,
+              type: 'error',
+              grouping: true,
+            })
+          }
+        })
+      }
     },
     ret() {
       window.history.back()
     },
     // 获取验证码
     getCheckCode() {
-      let reg = /^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/
-      if (this.ruleForm.email !== '' && reg.test(this.ruleForm.email)) {
+      if (this.ruleForm.email !== '' && emailReg.test(this.ruleForm.email)) {
         this.loadingOrNot = true
         axios({
           url: '/api/mail/getCheckCode',
@@ -202,7 +227,7 @@ export default {
         })
       } else {
         ElMessage({
-          message: '请先输入邮箱',
+          message: '请先输入正确的邮箱',
         })
       }
     },
@@ -213,7 +238,7 @@ export default {
 <style scoped>
 #registerDiv {
   padding-top: 130px;
-  background: url("../assets/alone.jpg");
+  background: url("../assets/sea.jpg");
   background-size: 100% 100%;
   width: 100%;
   height: 100%;

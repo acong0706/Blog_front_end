@@ -2,15 +2,21 @@
   <div id="loginDiv" type="flex" justify="space-around" align="middle">
     <el-form id="loginBlock">
       <h1>登&nbsp;录&nbsp;页&nbsp;面</h1>
-      <el-input
-          placeholder="账号"
-          class="loginInput"
-          v-model="account"/>
-      <el-input
-          type="password"
-          placeholder="密码"
-          class="loginInput"
-          v-model="pwd"/>
+      <el-form :model="ruleForm" :rules="rules" style="margin-top: 25px;">
+        <el-form-item prop="account">
+          <el-input
+              placeholder="账号"
+              class="loginInput"
+              v-model="ruleForm.account"/>
+        </el-form-item>
+        <el-form-item prop="pwd">
+          <el-input
+              type="password"
+              placeholder="密码"
+              class="loginInput"
+              v-model="ruleForm.pwd"/>
+        </el-form-item>
+      </el-form>
       <div style="text-align: right; margin-top: 10px;">
         <el-row>
           <el-col :span="6">
@@ -41,58 +47,88 @@ import {ElMessage} from "element-plus";
 import router from "@/router";
 import axios from "axios";
 
+let accountReg = /^[1-9][0-9]{4,10}$/
+
 export default {
   name: "LoginPage",
   data() {
+    let validateAccount = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('账号不可为空'))
+      } else {
+        if(!accountReg.test(value)) {
+          callback(new Error('账号应为5到11位的正整数'))
+        }
+        callback()
+      }
+    }
+    let validatePwd = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('密码不可为空'))
+      } else {
+        callback()
+      }
+    }
     return {
-      account: '',
-      pwd: '',
+      ruleForm: {
+        account: '',
+        pwd: '',
+      },
+      rules: {
+        account: [
+          { validator: validateAccount, trigger: 'blur' }
+        ],
+        pwd: [
+          { validator: validatePwd, trigger: 'blur' }
+        ]
+      },
     }
   },
   methods: {
     login() {
-      if (this.account === '' || this.pwd === '') {
+      if (this.ruleForm.account === '' || this.ruleForm.pwd === '') {
         ElMessage({
           message: '账号或密码为空',
           type: 'warning',
+          grouping: true,
         })
       } else {
-        /*接下来就是验证账号和密码的正确性
-        * 这里存在一个之前一直忽视的问题
+        /*这里存在一个之前一直忽视的问题
         * 就是 token 的存在性问题
         */
-        axios({
-          url: '/api/user/login',
-          method: 'POST',
-          params: {
-            account: this.account,
-            pwd: this.pwd
-          }
-        }).then(resp => {
-          console.log(resp)
-          if(resp.data.result) {
-            ElMessage({
-              message: '登录成功',
-              type: 'success',
-            })
-            setTimeout(function (){
-              router.push('/')
-            }, 1000)
-          } else {
-            ElMessage({
-              message: '账号或密码错误',
-              type: 'error',
-            })
-          }
-        })
-        // ElMessage({
-        //   message: '登录成功',
-        //   type: 'success',
-        // })
-        // setTimeout(function (){
-        //   router.push('/')
-        //   // alert(resp.data.test)
-        // }, 1000)
+        if (!accountReg.test(this.ruleForm.account)) {
+          ElMessage({
+            message: '账号或密码不规范，请进行更正',
+            grouping: true,
+          })
+        } else {
+          // alert(this.ruleForm.account.length)
+          axios({
+            url: '/api/user/login',
+            method: 'POST',
+            params: {
+              account: this.ruleForm.account,
+              pwd: this.ruleForm.pwd
+            }
+          }).then(resp => {
+            console.log(resp)
+            if(resp.data.result) {
+              ElMessage({
+                message: '登录成功',
+                type: 'success',
+              })
+              setTimeout(function (){
+                router.push('/')
+              }, 1000)
+            } else {
+              ElMessage({
+                message: '账号或密码错误',
+                type: 'error',
+                grouping: true,
+              })
+            }
+          })
+        }
       }
     },
     ret() {
@@ -104,14 +140,15 @@ export default {
 
 <style scoped>
 #loginDiv {
-  padding-top: 180px;
-  background: url("../assets/grass.jpg");
+  padding-top: 130px;
+  background: url("../assets/sea.jpg");
   background-size: 100% 100%;
   width: 100%;
   height: 100%;
   position: fixed;
 }
 #loginBlock {
+  margin-top: 50px;
   background-color: rgba(221, 230, 239, 0.75);
   text-align: center;
   border: solid 1px rgba(102, 146, 191, 0.68);
@@ -133,7 +170,6 @@ export default {
   box-shadow: 7px 15px 30px #595d5d;
 }
 .loginInput {
-  margin-top: 25px;
   height: 40px;
 }
 a {

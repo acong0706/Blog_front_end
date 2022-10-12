@@ -1,5 +1,5 @@
 <template>
-  <el-card v-for="item in 10">
+  <el-card v-for="item in 10" style="margin-bottom: 7px;border-radius: 10px;">
     <h1 style="margin-bottom: 5px;cursor: pointer;">
       <a @click="goBlogPage(item)">题目{{ item }}</a>
     </h1>

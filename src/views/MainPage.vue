@@ -3,7 +3,7 @@
     <el-container>
       <el-header id="headerOfMainPage">
         <el-affix>
-          <main-header/>
+          <main-header style="background-color: rgb(253,253,254);"/>
         </el-affix>
       </el-header>
       <el-main id="mainOfMainPage">
@@ -33,15 +33,19 @@ export default {
 </script>
 
 <style>
+.common-layout {
+  background: url("../assets/sea.jpg") no-repeat center top fixed;
+}
 #headerOfMainPage {
   padding: 0;
   height: auto;
 }
 #mainOfMainPage {
   padding: 0;
-  background-color: #cfe8ec;
+  /*background-color: #cfe8ec;*/
   display: flex;
   justify-content: center;
+  /*opacity: 0.9;*/
   /*height: 500px;*/
 }
 #contentOfMainPage {

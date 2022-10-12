@@ -19,9 +19,7 @@
     <template #header>
       <h2>备案信息</h2>
     </template>
-    <h1>*</h1>
-    <h1>*</h1>
-    <h1>*</h1>
+    <a href="https://beian.miit.gov.cn/">鲁ICP备2022032144号</a>
   </el-card>
 </template>
 
