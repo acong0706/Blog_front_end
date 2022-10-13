@@ -1,55 +1,39 @@
 <template>
-  <div class="common-layout">
-    <el-container>
-      <el-header id="headerOfMainPage">
-        <el-affix>
-          <main-header/>
-        </el-affix>
-      </el-header>
-      <el-main id="mainOfMainPage">
-        <div id="contentOfMainPage">
-          <el-row>
-            <el-col :span="24">
-              <h1>博客发布</h1>
-              <v-md-editor v-model="value" height="580px"></v-md-editor>
-            </el-col>
-          </el-row>
-        </div>
-      </el-main>
-    </el-container>
-  </div>
+  <main-except-content>
+    <el-row>
+      <el-col :span="24">
+        <el-row style="margin-bottom: 10px;">
+          <el-col :span="2">
+            <el-button size="large">返回</el-button>
+          </el-col>
+          <el-col :span="17">
+            <el-input placeholder="请输入标题" v-model="title" size="large"/>
+          </el-col>
+          <el-col :span="5" style="text-align: right;">
+            <el-button size="large" type="warning">保存草稿</el-button>
+            <el-button size="large" type="primary">发布文章</el-button>
+          </el-col>
+        </el-row>
+        <v-md-editor v-model="content" height="650px"></v-md-editor>
+      </el-col>
+    </el-row>
+  </main-except-content>
 </template>
 
 <script>
-import mainHeader from "@/components/mainHeader";
+import MainExceptContent from "@/components/MainExceptContent";
 
 export default {
   name: "Publish",
-  components: { mainHeader},
+  components: { MainExceptContent },
   data() {
     return {
-      value: '',
+      content: '',
+      title: '',
     }
   },
 }
 </script>
 
 <style scoped>
-#headerOfMainPage {
-  padding: 0;
-  height: auto;
-}
-#mainOfMainPage {
-  padding: 0;
-  background-color: #cfe8ec;
-  display: flex;
-  justify-content: center;
-  /*height: 500px;*/
-}
-#contentOfMainPage {
-  margin-top: 15px;
-  margin-bottom: 10px;
-  width: 80%;
-  /*background-color: #6dcede;*/
-}
 </style>

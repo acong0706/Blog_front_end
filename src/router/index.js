@@ -9,6 +9,7 @@ import mainContent from "@/components/mainContent";
 import Message from "@/components/Message";
 import History from "@/components/History";
 import BlogPage from "@/components/BlogPage";
+import HelloWorld from "@/views/HelloWorld";
 
 const routes = [
     {
@@ -79,6 +80,13 @@ const routes = [
             title: '忘记密码'
         },
         component: ForgetPwd,
+    },
+    {
+        path: '/helloWorld',
+        meta: {
+            title: '测试页'
+        },
+        component: HelloWorld,
     },
 ];
 const router = createRouter({

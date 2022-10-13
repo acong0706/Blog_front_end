@@ -1,5 +1,5 @@
 <template>
-  <el-card style="margin-bottom: 15px;">
+  <el-card style="margin-bottom: 15px;border-radius: 10px;">
     <template #header>
       <h2>标签分类</h2>
     </template>
@@ -7,7 +7,7 @@
     <h1>*</h1>
     <h1>*</h1>
   </el-card>
-  <el-card style="margin-bottom: 15px;">
+  <el-card style="margin-bottom: 15px;border-radius: 10px;">
     <template #header>
       <h2>热门Top5</h2>
     </template>
@@ -15,7 +15,15 @@
     <h1>*</h1>
     <h1>*</h1>
   </el-card>
-  <el-card>
+  <el-card style="margin-bottom: 15px;border-radius: 10px;">
+    <template #header>
+      <h2>归档</h2>
+    </template>
+    <h1>*</h1>
+    <h1>*</h1>
+    <h1>*</h1>
+  </el-card>
+  <el-card style="border-radius: 10px;">
     <template #header>
       <h2>备案信息</h2>
     </template>
