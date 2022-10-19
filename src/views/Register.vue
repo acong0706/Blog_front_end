@@ -1,58 +1,70 @@
 <template>
   <div id="registerDiv" type="flex" justify="space-around" align="middle">
-    <el-form id="registerBlock">
-      <h1>注&nbsp;册&nbsp;页&nbsp;面</h1>
-      <el-form :model="ruleForm" :rules="rules" style="margin-top: 25px;">
-        <el-form-item prop="username">
-          <el-input
-              placeholder="用户名"
-              class="registerInput"
-              v-model="ruleForm.username"/>
-        </el-form-item>
-        <el-form-item prop="pwd">
-          <el-input
-              type="password"
-              placeholder="密码"
-              class="registerInput"
-              v-model="ruleForm.pwd"/>
-        </el-form-item>
-        <el-form-item prop="pwd2">
-          <el-input
-              type="password"
-              placeholder="确认密码"
-              class="registerInput"
-              v-model="ruleForm.pwd2"/>
-        </el-form-item>
-        <el-form-item prop="email">
-          <el-input
-              placeholder="邮箱"
-              class="registerInput"
-              v-model="ruleForm.email">
-            <template #append>
-              <el-button @click="getCheckCode" :loading="loadingOrNot" :disabled="!show">
-                <span v-show="show">获取验证码</span>
-                <span v-show="!show" class="count">{{count}}s后重新获取</span>
+    <el-row>
+      <el-col class="hidden-xs-only" :sm="2" :md="2" :lg="2" :xl="2"></el-col>
+      <el-col :xs="24" :sm="20" :md="20" :lg="20" :xl="20">
+        <el-row>
+          <el-col :xs="1" :sm="5" :md="7" :lg="8" :xl="8"></el-col>
+          <el-col :xs="22" :sm="14" :md="10" :lg="8" :xl="8">
+            <el-form id="registerBlock">
+              <h1>注&nbsp;册&nbsp;页&nbsp;面</h1>
+              <el-form ref="registerForm" :model="ruleForm" :rules="rules" style="margin-top: 25px;">
+                <el-form-item prop="username">
+                  <el-input
+                      placeholder="用户名"
+                      class="registerInput"
+                      v-model="ruleForm.username"/>
+                </el-form-item>
+                <el-form-item prop="pwd">
+                  <el-input
+                      type="password"
+                      placeholder="密码"
+                      class="registerInput"
+                      v-model="ruleForm.pwd"/>
+                </el-form-item>
+                <el-form-item prop="pwd2">
+                  <el-input
+                      type="password"
+                      placeholder="确认密码"
+                      class="registerInput"
+                      v-model="ruleForm.pwd2"/>
+                </el-form-item>
+                <el-form-item prop="email">
+                  <el-input
+                      placeholder="邮箱"
+                      class="registerInput"
+                      v-model="ruleForm.email">
+                    <template #append>
+                      <el-button @click="getCheckCode" :loading="loadingOrNot" :disabled="!show">
+                        <span v-show="show">获取验证码</span>
+                        <span v-show="!show" class="count">{{count}}s后重新获取</span>
+                      </el-button>
+                    </template>
+                  </el-input>
+                </el-form-item>
+                <el-form-item prop="code">
+                  <el-input
+                      placeholder="验证码"
+                      class="registerInput"
+                      v-model="ruleForm.code"/>
+                </el-form-item>
+              </el-form>
+              <el-button
+                  type="primary"
+                  @click="register"
+                  style="margin-right: 15px;">注&nbsp;册
               </el-button>
-            </template>
-          </el-input>
-        </el-form-item>
-        <el-form-item prop="code">
-          <el-input
-              placeholder="验证码"
-              class="registerInput"
-              v-model="ruleForm.code"/>
-        </el-form-item>
-      </el-form>
-      <el-button
-          type="primary"
-          @click="register"
-          style="margin-right: 15px;">注&nbsp;册
-      </el-button>
-      <el-button
-          @click="ret"
-          style="margin-left: 15px;">返&nbsp;回
-      </el-button>
-    </el-form>
+              <el-button
+                  @click="ret"
+                  style="margin-left: 15px;">返&nbsp;回
+              </el-button>
+            </el-form>
+          </el-col>
+          <el-col :xs="1" :sm="5" :md="7" :lg="8" :xl="8"></el-col>
+        </el-row>
+      </el-col>
+      <el-col class="hidden-xs-only" :sm="2" :md="2" :lg="2" :xl="2"></el-col>
+    </el-row>
   </div>
 </template>
 
@@ -145,43 +157,16 @@ export default {
   },
   methods: {
     register() {
-      console.log(this.ruleForm)
-      if (this.ruleForm.username === '' || this.ruleForm.pwd === '' || this.ruleForm.pwd2 === '' ||
-          this.ruleForm.email === '' || this.ruleForm.code === '' || !emailReg.test(this.ruleForm.email) ||
-          !codeReg.test(this.ruleForm.code) || this.ruleForm.pwd !== this.ruleForm.pwd2) {
-        ElMessage({
-          message: '信息有误，请仔细检查填写是否正确',
-          grouping: true,
-        })
-      } else {
-        axios({
-          url: '/api/user/register',
-          method: 'POST',
-          params: {
-            username: this.ruleForm.username,
-            pwd: this.ruleForm.pwd,
-            email: this.ruleForm.email,
-            code: this.ruleForm.code
-          }
-        }).then(resp => {
-          console.log(resp)
-          if (resp.data.result) {
-            ElMessage({
-              message: resp.data.msg,
-              type: 'success',
-              showClose: true,
-              duration: 0
-            })
-            router.push('/login')
-          } else {
-            ElMessage({
-              message: resp.data.msg,
-              type: 'error',
-              grouping: true,
-            })
-          }
-        })
-      }
+      this.$refs.registerForm.validate(async valid => {
+        if (valid) {
+          await this.$store.dispatch('user/register', this.ruleForm)
+        } else {
+          ElMessage({
+            message: '信息有误，请仔细检查填写是否正确',
+            grouping: true,
+          })
+        }
+      })
     },
     ret() {
       window.history.back()
@@ -237,7 +222,7 @@ export default {
 
 <style scoped>
 #registerDiv {
-  padding-top: 130px;
+  padding-top: 120px;
   background: url("../assets/sea.jpg");
   background-size: 100% 100%;
   width: 100%;
@@ -249,12 +234,10 @@ export default {
   background-color: rgba(221, 230, 239, 0.75);
   text-align: center;
   border: solid 1px rgba(102, 146, 191, 0.68);
-  /*width: 30%;*/
-  width: 340px;
-  height: 390px;
+  height: 395px;
   border-radius: 15px;
   box-shadow: 2px 2px 5px #333333;
-  padding: 25px 50px 20px 50px;
+  padding: 25px 35px 20px 35px;
   overflow: auto;
   transition: all 0.3s linear;/*0.3s过渡时间*/
 }

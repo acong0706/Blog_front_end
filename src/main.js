@@ -14,6 +14,9 @@ import VMdEditor from '@kangc/v-md-editor';
 import '@kangc/v-md-editor/lib/style/base-editor.css';
 import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
 import '@kangc/v-md-editor/lib/theme/style/github.css';
+// md-editor-v3
+import MdEditor from 'md-editor-v3'
+import 'md-editor-v3/lib/style.css'
 
 VMdEditor.use(githubTheme);
 
@@ -26,4 +29,5 @@ app.use(router)
     .use(store)
     .use(ElementPlus)
     .use(VMdEditor)
+    .use(MdEditor)
     .mount('#app');

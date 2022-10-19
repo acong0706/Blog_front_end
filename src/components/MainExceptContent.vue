@@ -3,7 +3,7 @@
     <el-container>
       <el-header id="headerOfMainPage">
         <el-affix>
-          <main-header style="background-color: rgb(253,253,254);"/>
+          <main-header style="background-color: rgb(245,250,250);"/>
         </el-affix>
       </el-header>
       <el-main id="mainOfMainPage">
@@ -34,7 +34,7 @@ export default {
 
 <style scoped>
 .common-layout {
-  background: #d5ebf1;
+  background: rgb(209, 239, 248);
   height: 100%;
 }
 #headerOfMainPage {
@@ -51,7 +51,7 @@ export default {
   margin-bottom: 10px;
 }
 #footerOfMainPage {
-  background-color: rgb(253,253,254);
+  background-color: rgb(245,250,250);
   text-align: center;
   height: auto;
   padding-top: 15px;

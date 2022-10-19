@@ -8,6 +8,7 @@
         <Aside></Aside>
       </el-col>
     </el-row>
+    <el-backtop :right="100" :bottom="100" />
   </MainExceptContent>
 </template>
 
