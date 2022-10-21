@@ -70,7 +70,6 @@
 
 <script>
 import {ElMessage} from "element-plus";
-import router from "@/router"
 import axios from "axios";
 
 const TIME_COUNT = 60 // 设置一个全局的倒计时的时间

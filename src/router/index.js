@@ -46,9 +46,6 @@ const routes = [
             },
             {
                 path: '/blogPage',
-                meta: {
-                    title: '某个页面'
-                },
                 component: BlogPage,
             },
         ]

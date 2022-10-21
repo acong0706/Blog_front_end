@@ -14,20 +14,25 @@ import VMdEditor from '@kangc/v-md-editor';
 import '@kangc/v-md-editor/lib/style/base-editor.css';
 import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
 import '@kangc/v-md-editor/lib/theme/style/github.css';
-// md-editor-v3
-import MdEditor from 'md-editor-v3'
-import 'md-editor-v3/lib/style.css'
 
-VMdEditor.use(githubTheme);
+// highlightjs
+import hljs from 'highlight.js';
+
+VMdEditor.use(githubTheme, {
+    Hljs: hljs,
+});
 
 const app = createApp(App);
 for (const [key, component] of Object.entries(ElIcons)) {
     app.component(key, component)
 }
 
+router.afterEach((to,from,next) => {
+    window.scrollTo(0,0);
+});
+
 app.use(router)
     .use(store)
     .use(ElementPlus)
     .use(VMdEditor)
-    .use(MdEditor)
     .mount('#app');

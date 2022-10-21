@@ -29,11 +29,18 @@ export default {
   },
   methods: {
     goBlogPage(item) {
-      router.push({path:'/blogPage',query:{item: item}})
+      // router.push({path:'/blogPage',query:{item: item+(this.changeNum-1)*10}})
+      let goPage = router.resolve({
+        path: '/blogPage',
+        query: {
+          item: item+(this.changeNum-1)*10,
+        }
+      })
+      window.open(goPage.href, '_blank')
     },
     changePage(number) {
       this.changeNum = number
-    }
+    },
   },
 }
 </script>

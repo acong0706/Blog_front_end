@@ -1,13 +1,15 @@
 import router from "@/router";
-import {ElMessage} from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
 import {
     getNum, setNum, removeNum,
     getRefreshToken, setRefreshToken, removeRefreshToken,
     getToken, setToken, removeToken
 } from "@/utils/auth";
 import {
+    forgetPwd_email_Api, forgetPwd_password_Api,
     loginApi, registerApi
-} from "@/api/login_register"
+} from "@/api/userInfo"
+import store from "@/store";
 
 const state = {
     // 数据存储
@@ -24,6 +26,7 @@ const mutations = {
     },
     removeTokenFn() {
         removeToken()
+        state.token = getToken()
     },
     setRefreshTokenFn(state, newRefreshToken) {
         state.refreshToken = newRefreshToken;
@@ -31,6 +34,7 @@ const mutations = {
     },
     removeRefreshTokenFn() {
         removeRefreshToken()
+        state.refreshToken = getRefreshToken()
     },
     setAvatarNumFn(state, num) {
         state.avatarNum = num;
@@ -38,6 +42,7 @@ const mutations = {
     },
     removeNumFn() {
         removeNum()
+        state.avatarNum = getNum()
     }
 }
 
@@ -80,7 +85,58 @@ const actions = {
                 grouping: true,
             })
         }
-    }
+    },
+    async forgetPwd_email(context, ruleForm) {
+        const {data} = await forgetPwd_email_Api(ruleForm)
+        if (data.have) {
+            if (data.result) {
+                ElMessage({
+                    type: 'success',
+                    message: data.msg,
+                })
+                return true
+            } else {
+                ElMessage({
+                    message: data.msg,
+                    type: 'error',
+                    grouping: true,
+                })
+                return false
+            }
+        } else {
+            ElMessageBox.confirm(
+                data.msg,
+                '提示',
+                {
+                    confirmButtonText: '进行注册',
+                    cancelButtonText: '返回主页面',
+                    type: 'warning',
+                }
+            ).then(() => {
+                router.push('/register')
+            }).catch(() => {
+                router.push('/')
+            })
+        }
+
+    },
+    async forgetPwd_password(context, ruleForm) {
+        const {data} = await forgetPwd_password_Api(ruleForm)
+        if (data.result) {
+            // msg: '密码修改成功'
+            ElMessage({
+                type: 'success',
+                message: data.msg + "，返回登录页面",
+            })
+            await router.push('/login')
+        } else {
+            ElMessage({
+                message: data.msg,
+                type: 'error',
+                grouping: true,
+            })
+        }
+    },
 }
 
 const getters = {

@@ -8,7 +8,7 @@
         <Aside></Aside>
       </el-col>
     </el-row>
-    <el-backtop :right="100" :bottom="100" />
+    <el-backtop :right="70" :bottom="70" :visibility-height="150"/>
   </MainExceptContent>
 </template>
 
