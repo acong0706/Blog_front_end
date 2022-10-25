@@ -16,7 +16,7 @@ request.interceptors.request.use(function (request) {
     }
     return request
 }, function (error) {
-    console.log(error)
+    // console.log(error)
     return Promise.reject(error)
 })
 
@@ -27,11 +27,9 @@ request.interceptors.response.use(function (response) {
     console.log(error.response)
     if (error.response.status === 401) {
         console.log(
-            'token过期了，一个小时过去了，需要通过refresh_token去刷新token'
+            '两个小时过去了，token过期了，需要通过refresh_token去刷新token'
         )
         const refreshToken = store.state.user.refreshToken
-        // console.log(store.state.user.token)
-        // console.log(refreshToken)
         if (refreshToken) {
             try {
                 console.log('存在refreshToken，需要进行刷新token操作')

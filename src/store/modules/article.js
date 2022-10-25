@@ -1,13 +1,13 @@
-import router from "@/router";
 import {ElMessage} from "element-plus";
 import {
-    getTitle,getContent,setTitle,setContent,removeTitle,removeContent
+    getTitle, getContent, setTitle, setContent, removeTitle, removeContent, getTags, setTags, removeTags
 } from "@/utils/pageCookies";
-import {publishApi} from "@/api/publish";
+import {publishApi, get_tags, getArticles, getArticle} from "@/api/article";
 
 const state = {
     title: getTitle(),
     content: getContent(),
+    tags: getTags()
 }
 
 const mutations = {
@@ -28,11 +28,20 @@ const mutations = {
         removeContent()
         state.content = getContent()
     },
+    setTags(state, tags) {
+        state.tags = tags;
+        setTags(tags)
+    },
+    removeTags() {
+        removeTags()
+        state.tags = getTags()
+    },
 }
 
 const actions = {
     async publish(context, ruleForm) {
         const {data} = await publishApi(ruleForm)
+        console.log(data)
         if (data.result) {
             ElMessage({
                 type: 'success',
@@ -44,6 +53,21 @@ const actions = {
                 message: '发布失败，请重新尝试'
             })
         }
+    },
+    async getTags(context) {
+        const {data} = await get_tags()
+        // console.log(data)
+        return data.tags
+    },
+    async getArticles(context) {
+        const {data} = await getArticles()
+        console.log(data)
+        return data.articles
+    },
+    async getArticle(context, id) {
+        const {data} = await getArticle(id)
+        console.log(data)
+        return data.article
     }
 }
 
@@ -51,6 +75,7 @@ const getters = {
     // 获取到最终的数据结果
     title: state => state.title,
     content: state => state.content,
+    tags: state => state.tags,
 }
 
 // 导出

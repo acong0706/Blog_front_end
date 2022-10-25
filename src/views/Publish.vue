@@ -6,7 +6,7 @@
           <el-button @click="ret">返回</el-button>
         </el-col>
         <el-col :sm="12" :md="14" :lg="16" :xl="17">
-          <el-input placeholder="请输入标题" v-model="title"/>
+          <el-input placeholder="请输入标题" v-model="form.title"/>
         </el-col>
         <el-col :sm="9" :md="7" :lg="6" :xl="5" style="text-align: right;">
           <el-button :loading="saveLoading" @click="save" type="warning">保存草稿</el-button>
@@ -24,10 +24,31 @@
       </el-row>
       <el-row style="margin-bottom: 10px;" class="hidden-sm-and-up">
         <el-col>
-          <el-input placeholder="请输入标题" v-model="title" size="large"/>
+          <el-input placeholder="请输入标题" v-model="form.title" size="large"/>
         </el-col>
       </el-row>
-      <v-md-editor v-model="content" height="650px"/>
+      <el-row style="margin-bottom: 10px;">
+        <el-col :span="24">
+          <el-select
+              v-model="chooseTags"
+              :multiple="true"
+              :filterable="true"
+              :allow-create="true"
+              :default-first-option="true"
+              :reserve-keyword="false"
+              placeholder="为你的文章进行分类（可多选）"
+              style="width: 100%;"
+          >
+            <el-option
+                v-for="item in tagOfOptions"
+                :key="item"
+                :label="item"
+                :value="item"
+            />
+          </el-select>
+        </el-col>
+      </el-row>
+      <v-md-editor v-model="form.content" height="650px" @change="changeSave"/>
     </el-card>
   </main-except-content>
 </template>
@@ -38,9 +59,7 @@ import 'element-plus/theme-chalk/display.css'
 import VMdEditor from "@kangc/v-md-editor"
 import {ElMessage, ElMessageBox} from "element-plus";
 import store from "@/store"
-
-// 布局明天再改，今天先解决发布信息的获取
-// :xs="24" :sm="8" :md="8" :lg="8" :xl="8"
+import qs from "qs"
 
 export default {
   name: "Publish",
@@ -50,15 +69,46 @@ export default {
   },
   data() {
     return {
-      title: '',
-      content: '',
+      form: {
+        title: '',
+        content: '',
+        newTags: [],
+        oldTags: [],
+        author: '',
+        date: '',
+      },
       saveLoading: false,
+      chooseTags: [],
+      tagOfOptions: [],
+      optionsForChoose: [],
+      saveOrNot: false,
     }
   },
+  created() {
+    this.getTags()
+  },
   mounted() {
+    // let _this = this;
+    // window.onbeforeunload = function(e) {
+    //   // 那个路由页面需要，就把path的名字修改成那个，比如我当前页面的path是/vue
+    //   if (_this.$route.path === "/publish") {
+    //     // 兼容IE8和Firefox 4之前的事件对象写法（不加也行，现在少有项目兼容老版本浏览器了）
+    //     e = e || window.event;
+    //     if (e) {
+    //       e.returnValue = " ";
+    //     }
+    //     // Chrome支持, Safari支持, Firefox 4版本以后支持, Opera 12版本以后支持 , IE 9版本以后支持
+    //     return " ";
+    //   }
+    // };
     let title = store.getters['article/title']
     let content = store.getters['article/content']
-    if ((title !== undefined || content !== undefined) && (title !== '' || content !== '')) {
+    let tags = store.getters['article/tags']
+    if (tags !== undefined) {
+      tags = tags.split(',')
+    }
+    if ((title !== undefined || content !== undefined || tags !== undefined)
+        && (title !== '' || content !== '' || tags !== '')) {
       ElMessageBox.confirm(
           '是否选择抛弃草稿',
           '还有草稿尚未提交',
@@ -70,13 +120,15 @@ export default {
       ).then(() => {
         store.commit('article/removeTitle')
         store.commit('article/removeContent')
+        store.commit('article/removeTags')
         ElMessage({
           type: 'info',
           message: '草稿已删除',
         })
       }).catch(() => {
-        this.title = title
-        this.content = content
+        this.form.title = title
+        this.form.content = content
+        this.chooseTags = tags
         ElMessage({
           type: 'success',
           message: '草稿加载完成',
@@ -85,22 +137,56 @@ export default {
     }
   },
   methods: {
-    publish() {
+    timestampToTime(timestamp) {
+      let date = new Date(timestamp);//时间戳为10位需*1000，时间戳为13位的话不需乘1000
+      let Y = date.getFullYear() + '-';
+      let M = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
+      let D = (date.getDate() < 10 ? '0' + date.getDate() : date.getDate()) + ' ';
+      let h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
+      let m = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':';
+      let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+      return Y + M + D + h + m + s;
+    },
+    async publish() {
       if (this.title === '' || this.content === '') {
         ElMessage({
           message: '标题或内容为空',
           type: 'warning'
         })
       } else {
-
+        if (this.chooseTags.length === 0) {
+          ElMessage({
+            message: '请选择文章分类',
+            type: 'warning'
+          })
+        } else {
+          for (let i = 0; i < this.chooseTags.length; i++) {
+            if (this.optionsForChoose.includes(this.chooseTags[i])) {
+              this.form.oldTags.push(this.chooseTags[i])
+            } else {
+              this.form.newTags.push(this.chooseTags[i])
+            }
+          }
+          this.form.date = this.timestampToTime(new Date().getTime())
+          this.form.author = window.localStorage.getItem("username")
+          // console.log(this.form.oldTags)
+          this.form.oldTags = qs.stringify(this.form.oldTags)
+          this.form.newTags = qs.stringify(this.form.newTags)
+          // console.log(this.form.oldTags)
+          await this.$store.dispatch('article/publish', this.form)
+          this.form.oldTags = []
+          this.form.newTags = []
+        }
       }
     },
     save() {
-      store.commit('article/setTitle', this.title)
-      store.commit('article/setContent', this.content)
+      store.commit('article/setTitle', this.form.title)
+      store.commit('article/setContent', this.form.content)
+      store.commit('article/setTags', this.chooseTags)
       this.saveLoading = true
       let that = this
-      setTimeout(()=>{
+      this.saveOrNot = true
+      setTimeout(() => {
         that.saveLoading = false
         ElMessageBox.confirm(
             '草稿保存完成，是否返回上一页',
@@ -117,6 +203,17 @@ export default {
     ret() {
       window.history.back()
     },
+    changeSave() {
+      if (this.saveOrNot) {
+        this.saveOrNot = false
+      }
+    },
+    async getTags() {
+      const result = await this.$store.dispatch('article/getTags')
+      console.log(result)
+      this.tagOfOptions = result
+      this.optionsForChoose = result
+    }
   },
 }
 </script>
@@ -124,7 +221,7 @@ export default {
 <style scoped>
 .publishCard {
   border-radius: 20px;
-  background: rgba(255,255,255,0.45);
+  background: rgba(255, 255, 255, 0.45);
   margin-bottom: 5px;
 }
 </style>

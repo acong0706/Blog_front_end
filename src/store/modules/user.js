@@ -49,10 +49,13 @@ const mutations = {
 const actions = {
     // 执行动作，数据请求
     async login(context, ruleForm) {
+        window.localStorage.setItem("account", ruleForm.account)
         const {data} = await loginApi(ruleForm)
+        console.log(data)
         if (data.result) {
             context.commit('setTokenFn', data.token.token)
             context.commit('setRefreshTokenFn', data.token.refreshToken)
+            window.localStorage.setItem('username', data.username)
             let num = Math.round(Math.random()*8)+1
             context.commit('setAvatarNumFn', num)
             ElMessage({

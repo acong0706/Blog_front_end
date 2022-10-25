@@ -179,6 +179,8 @@ export default {
         store.commit('user/removeRefreshTokenFn')
         store.commit('user/removeTokenFn')
         store.commit('user/removeNumFn')
+        window.localStorage.removeItem("username")
+        window.localStorage.removeItem("account")
         ElMessage({
           message: '退出成功',
           type: 'success',
