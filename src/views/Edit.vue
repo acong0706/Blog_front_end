@@ -2,24 +2,22 @@
   <main-except-content>
     <el-card class="publishCard">
       <el-row style="margin-bottom: 10px;" class="hidden-xs-only">
-        <el-col :sm="3" :md="3" :lg="2" :xl="2">
-          <el-button @click="ret">返回</el-button>
+        <el-col :sm="5" :md="4" :lg="3" :xl="3">
+          <el-button @click="ret">放弃修改</el-button>
         </el-col>
-        <el-col :sm="12" :md="14" :lg="16" :xl="17">
+        <el-col :sm="14" :md="16" :lg="18" :xl="18">
           <el-input placeholder="请输入标题" v-model="form.title"/>
         </el-col>
-        <el-col :sm="9" :md="7" :lg="6" :xl="5" style="text-align: right;">
-          <el-button :loading="saveLoading" @click="save" type="warning">保存草稿</el-button>
-          <el-button @click="publish" type="primary">发布文章</el-button>
+        <el-col :sm="5" :md="4" :lg="3" :xl="3" style="text-align: right;">
+          <el-button @click="edit" type="primary">保存修改</el-button>
         </el-col>
       </el-row>
       <el-row style="margin-bottom: 10px;" class="hidden-sm-and-up">
-        <el-col :span="8">
-          <el-button size="large" @click="ret">返回</el-button>
+        <el-col :span="12">
+          <el-button size="large" @click="ret">放弃修改</el-button>
         </el-col>
-        <el-col :span="16" style="text-align: right;">
-          <el-button :loading="saveLoading" @click="save" size="large" type="warning">保存草稿</el-button>
-          <el-button @click="publish" size="large" type="primary">发布文章</el-button>
+        <el-col :span="12" style="text-align: right;">
+          <el-button @click="edit" size="large" type="primary">保存修改</el-button>
         </el-col>
       </el-row>
       <el-row style="margin-bottom: 10px;" class="hidden-sm-and-up">
@@ -56,12 +54,10 @@
 import MainExceptContent from "@/components/MainExceptContent";
 import 'element-plus/theme-chalk/display.css'
 import VMdEditor from "@kangc/v-md-editor"
-import {ElMessage, ElMessageBox} from "element-plus";
-import store from "@/store"
-import qs from "qs"
+import {ElMessage} from "element-plus";
 
 export default {
-  name: "Publish",
+  name: "Edit",
   components: {
     MainExceptContent,
     VMdEditor,
@@ -69,22 +65,27 @@ export default {
   data() {
     return {
       form: {
+        id: '',
         title: '',
         content: '',
         newTags: [],
         oldTags: [],
+        removeTags: [],
+        beforeTags: [],
         author: '',
         date: '',
       },
-      saveLoading: false,
       chooseTags: [],
+      beforeChangeTags: [],
       tagOfOptions: [],
       optionsForChoose: [],
-      saveOrNot: false,
+      item: -1,
     }
   },
   created() {
+    this.item = this.$route.query.item
     this.getTags()
+    this.getArticle()
   },
   mounted() {
     // let _this = this;
@@ -100,40 +101,6 @@ export default {
     //     return " ";
     //   }
     // };
-    let title = store.getters['article/title']
-    let content = store.getters['article/content']
-    let tags = store.getters['article/tags']
-    if (tags !== undefined) {
-      tags = tags.split(',')
-    }
-    if ((title !== undefined || content !== undefined || tags !== undefined)
-        && (title !== '' || content !== '' || tags !== '')) {
-      ElMessageBox.confirm(
-          '是否选择抛弃草稿',
-          '还有草稿尚未提交',
-          {
-            confirmButtonText: '重新开始',
-            cancelButtonText: '继续草稿',
-            type: 'warning',
-          }
-      ).then(() => {
-        store.commit('article/removeTitle')
-        store.commit('article/removeContent')
-        store.commit('article/removeTags')
-        ElMessage({
-          type: 'info',
-          message: '草稿已删除',
-        })
-      }).catch(() => {
-        this.form.title = title
-        this.form.content = content
-        this.chooseTags = tags
-        ElMessage({
-          type: 'success',
-          message: '草稿加载完成',
-        })
-      })
-    }
   },
   methods: {
     timestampToTime(timestamp) {
@@ -146,7 +113,7 @@ export default {
       let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
       return Y + M + D + h + m + s;
     },
-    async publish() {
+    async edit() {
       if (this.title === '' || this.content === '') {
         ElMessage({
           message: '标题或内容为空',
@@ -159,8 +126,6 @@ export default {
             type: 'warning'
           })
         } else {
-          // console.log(this.chooseTags)
-          // console.log(this.arrayChange(this.chooseTags))
           for (let i = 0; i < this.chooseTags.length; i++) {
             if (this.optionsForChoose.includes(this.chooseTags[i])) {
               this.form.oldTags.push(this.chooseTags[i])
@@ -168,37 +133,28 @@ export default {
               this.form.newTags.push(this.chooseTags[i])
             }
           }
+          for (let i = 0; i < this.beforeChangeTags.length; i++) {
+            if (!this.form.oldTags.includes(this.beforeChangeTags[i])) {
+              this.form.removeTags.push(this.beforeChangeTags[i])
+            }
+          }
+          for (let i = 0; i < this.form.oldTags.length; i++) {
+            if (!this.beforeChangeTags.includes(this.form.oldTags[i])) {
+              this.form.beforeTags.push(this.form.oldTags[i])
+            }
+          }
+          this.form.id = this.item
           this.form.date = this.timestampToTime(new Date().getTime())
           this.form.author = window.localStorage.getItem("username")
           this.form.oldTags = this.arrayChange(this.form.oldTags)
+          this.form.beforeTags = this.arrayChange(this.form.beforeTags)
           this.form.newTags = this.arrayChange(this.form.newTags)
-          console.log(this.form)
-          await this.$store.dispatch('article/publish', this.form)
+          this.form.removeTags = this.arrayChange(this.form.removeTags)
+          await this.$store.dispatch('article/edit', this.form)
           this.form.oldTags = []
           this.form.newTags = []
         }
       }
-    },
-    save() {
-      store.commit('article/setTitle', this.form.title)
-      store.commit('article/setContent', this.form.content)
-      store.commit('article/setTags', this.chooseTags)
-      this.saveLoading = true
-      let that = this
-      this.saveOrNot = true
-      setTimeout(() => {
-        that.saveLoading = false
-        ElMessageBox.confirm(
-            '草稿保存完成，是否返回上一页',
-            '',
-            {
-              confirmButtonText: '返回上一页',
-              cancelButtonText: '留在本页',
-            }
-        ).then(() => {
-          window.history.back()
-        })
-      }, 1000)
     },
     ret() {
       window.history.back()
@@ -214,11 +170,19 @@ export default {
       this.tagOfOptions = result
       this.optionsForChoose = result
     },
+    async getArticle() {
+      this.article = await this.$store.dispatch('article/getArticle', this.item)
+      this.form.title = this.article.title
+      this.form.content = this.article.content
+      let tags = this.article.tags.split(",")
+      this.chooseTags = tags
+      this.beforeChangeTags = tags
+    },
     arrayChange(tmp) {
       if (tmp.length > 0) {
         let tmpString = '0=' + tmp[0]
         for(let i = 1; i < tmp.length; i++) {
-          tmpString += i + '=' + tmp[i]
+          tmpString += '&' + i + '=' + tmp[i]
         }
         return tmpString
       } else {

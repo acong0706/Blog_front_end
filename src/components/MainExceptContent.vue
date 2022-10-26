@@ -17,7 +17,7 @@
         </el-row>
       </el-main>
       <el-footer id="footerOfMainPage">
-        Copyright&nbsp;&copy;&nbsp;2022&nbsp;Cong的博客
+        Copyright&nbsp;&copy;&nbsp;2022&nbsp;Cong的博客&nbsp;|&nbsp;{{ date }}
       </el-footer>
     </el-container>
   </div>
@@ -29,6 +29,34 @@ import mainHeader from "@/components/mainHeader";
 export default {
   name: "MainBesidesContent",
   components: { mainHeader, },
+  data() {
+    return {
+      date: this.nowTime(new Date())
+    };
+  },
+  mounted() {
+    let _this = this; // 声明一个变量指向Vue实例this，保证作用域一致
+    this.timer = setInterval(() => {
+      _this.date = this.nowTime(new Date()); // 修改数据date
+    }, 1000)
+  },
+  methods: {
+    nowTime(date) {
+      let yy = date.getFullYear()
+      let mm = date.getMonth()+1
+      let dd = date.getDate()
+      let hh = date.getHours()
+      let mf = date.getMinutes()<10 ? '0'+date.getMinutes() : date.getMinutes()
+      let ss = date.getSeconds()<10 ? '0'+date.getSeconds() : date.getSeconds()
+      let time = yy + '年' + mm + '月' + dd + '日' + hh + '时' + mf + '分' + ss + '秒'
+      return time
+    }
+  },
+  beforeDestroy() {
+    if (this.timer) {
+      clearInterval(this.timer); // 在Vue实例销毁前，清除我们的定时器
+    }
+  },
 }
 </script>
 

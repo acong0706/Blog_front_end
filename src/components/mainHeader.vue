@@ -11,9 +11,9 @@
         <h1><a href="/">Cong的博客</a></h1>
       </el-col>
       <el-col :xs="19" :sm="8" :md="6" :lg="6" :xl="6" style="margin-top: 5px;">
-        <el-input size="large" placeholder="搜索博客" style="margin-left: 10px;margin-right: 10px;">
+        <el-input v-model="msg" size="large" placeholder="搜索博客" style="margin-left: 10px;margin-right: 10px;">
           <template #append>
-            <el-button :icon="Search">
+            <el-button :icon="Search" @click="search">
               搜索
             </el-button>
           </template>
@@ -143,6 +143,12 @@ export default {
         avatar7, avatar8, avatar9, avatar10],
       avatar: avatar1,
       loginOrNot: store.getters['user/refreshToken'] !== undefined,
+      msg: '',
+    }
+  },
+  created() {
+    if (this.$route.query.msg !== undefined) {
+      this.msg = this.$route.query.msg
     }
   },
   mounted() {
@@ -152,6 +158,14 @@ export default {
     }
   },
   methods: {
+    search() {
+      router.push({
+        path: '/',
+        query: {
+          msg: this.msg,
+        }
+      })
+    },
     publish() {
       if (this.loginOrNot) {
         router.push('/publish')
@@ -186,6 +200,7 @@ export default {
           type: 'success',
         })
         this.loginOrNot = false
+        location.reload()
       }).catch(() => {
         ElMessage({
           type: 'info',

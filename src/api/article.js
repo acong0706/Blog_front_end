@@ -31,3 +31,21 @@ export function getArticle(id) {
         },
     })
 }
+
+export function addViews(id) {
+    return request({
+        url: '/article/addViews',
+        method: 'POST',
+        params: {
+            id: id,
+        },
+    })
+}
+
+export function editApi(editForm) {
+    return request({
+        url: '/article/edit',
+        method: 'POST',
+        params: editForm,
+    })
+}

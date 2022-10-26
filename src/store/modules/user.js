@@ -43,7 +43,7 @@ const mutations = {
     removeNumFn() {
         removeNum()
         state.avatarNum = getNum()
-    }
+    },
 }
 
 const actions = {

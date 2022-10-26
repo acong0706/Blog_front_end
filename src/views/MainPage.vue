@@ -19,6 +19,17 @@ import MainExceptContent from "@/components/MainExceptContent";
 export default {
   name: 'MainPage',
   components: { Aside, MainExceptContent },
+  mounted() {
+    document.addEventListener('visibilitychange',function(e){
+      let state = document.visibilityState
+      if(state == 'visible'){
+        let username = window.localStorage.getItem("username")
+        if (username == undefined) {
+          location.reload()
+        }
+      }
+    });
+  },
 }
 </script>
 

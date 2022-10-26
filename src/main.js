@@ -14,6 +14,9 @@ import VMdEditor from '@kangc/v-md-editor';
 import '@kangc/v-md-editor/lib/style/base-editor.css';
 import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
 import '@kangc/v-md-editor/lib/theme/style/github.css';
+//nprogress
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css' //这个样式必须引入
 
 // highlightjs
 import hljs from 'highlight.js';
@@ -27,12 +30,9 @@ for (const [key, component] of Object.entries(ElIcons)) {
     app.component(key, component)
 }
 
-router.afterEach((to,from,next) => {
-    window.scrollTo(0,0);
-});
-
 app.use(router)
     .use(store)
     .use(ElementPlus)
     .use(VMdEditor)
+    .use(NProgress)
     .mount('#app');

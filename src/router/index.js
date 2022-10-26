@@ -12,6 +12,8 @@ import History from "@/components/History";
 import BlogPage from "@/components/BlogPage";
 import HelloWorld from "@/views/HelloWorld";
 import {ElMessage} from "element-plus";
+import NProgress from "nprogress";
+import Edit from "@/views/Edit";
 
 const routes = [
     {
@@ -69,6 +71,14 @@ const routes = [
         component: Publish,
     },
     {
+        path: '/edit',
+        meta: {
+            title: '博客修改',
+            requireAuth: true,
+        },
+        component: Edit,
+    },
+    {
         path: '/login',
         meta: {
             title: '登录',
@@ -106,7 +116,17 @@ const router = createRouter({
     history: createWebHistory(),    //去掉＃
     routes,
 });
+
+NProgress.configure({
+    easing: 'ease',  // 动画方式
+    speed: 500,  // 递增进度条的速度
+    showSpinner: false, // 是否显示加载ico
+    trickleSpeed: 200, // 自动递增间隔
+    minimum: 0.3 // 初始化时的最小百分比
+})
+
 router.beforeEach((to, from, next) => {
+    NProgress.start();
     // 用于设置 浏览器的 title 显示
     if (to.meta.title) { //如果设置标题，拦截后设置标题
         document.title = to.meta.title
@@ -125,4 +145,8 @@ router.beforeEach((to, from, next) => {
         next()
     }
 })
+router.afterEach((to,from,next) => {
+    NProgress.done()
+    window.scrollTo(0,0);
+});
 export default router;

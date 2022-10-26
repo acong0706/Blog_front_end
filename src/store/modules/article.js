@@ -2,7 +2,8 @@ import {ElMessage} from "element-plus";
 import {
     getTitle, getContent, setTitle, setContent, removeTitle, removeContent, getTags, setTags, removeTags
 } from "@/utils/pageCookies";
-import {publishApi, get_tags, getArticles, getArticle} from "@/api/article";
+import {publishApi, get_tags, getArticles, getArticle, addViews, editApi} from "@/api/article";
+import router from "@/router";
 
 const state = {
     title: getTitle(),
@@ -41,12 +42,21 @@ const mutations = {
 const actions = {
     async publish(context, ruleForm) {
         const {data} = await publishApi(ruleForm)
-        console.log(data)
+        // console.log(data)
         if (data.result) {
             ElMessage({
                 type: 'success',
                 message: '发布成功'
             })
+            await router.push({
+                path: '/blogPage',
+                query: {
+                    item: data.articleId,
+                }
+            })
+            context.commit('removeTitle')
+            context.commit('removeContent')
+            context.commit('removeTags')
         } else {
             ElMessage({
                 type: 'error',
@@ -61,14 +71,39 @@ const actions = {
     },
     async getArticles(context) {
         const {data} = await getArticles()
-        console.log(data)
+        // console.log(data)
         return data.articles
     },
     async getArticle(context, id) {
         const {data} = await getArticle(id)
-        console.log(data)
+        // console.log(data)
         return data.article
-    }
+    },
+    async addViews(context, id) {
+        const {data} = await addViews(id)
+        // console.log(data)
+    },
+    async edit(context, ruleForm) {
+        const {data} = await editApi(ruleForm)
+        // console.log(data)
+        if (data.result.result) {
+            ElMessage({
+                type: 'success',
+                message: '修改成功'
+            })
+            await router.push({
+                path: '/blogPage',
+                query: {
+                    item: data.result.id,
+                }
+            })
+        } else {
+            ElMessage({
+                type: 'error',
+                message: '修改失败，请重新尝试'
+            })
+        }
+    },
 }
 
 const getters = {
