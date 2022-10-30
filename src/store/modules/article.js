@@ -2,13 +2,21 @@ import {ElMessage} from "element-plus";
 import {
     getTitle, getContent, setTitle, setContent, removeTitle, removeContent, getTags, setTags, removeTags
 } from "@/utils/pageCookies";
-import {publishApi, get_tags, getArticles, getArticle, addViews, editApi} from "@/api/article";
+import {
+    publishApi,
+    get_tags,
+    getArticles,
+    getArticle,
+    addViews,
+    editApi,
+    getArticlesByArchive, top5_ArchiveApi
+} from "@/api/article";
 import router from "@/router";
 
 const state = {
     title: getTitle(),
     content: getContent(),
-    tags: getTags()
+    tags: getTags(),
 }
 
 const mutations = {
@@ -104,6 +112,14 @@ const actions = {
             })
         }
     },
+    async top5(context) {
+        const {data} = await top5_ArchiveApi()
+        return data
+    },
+    async getArticlesByArchive(context, item) {
+        const {data} = await getArticlesByArchive(item)
+        return data.articles
+    }
 }
 
 const getters = {

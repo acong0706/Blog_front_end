@@ -49,3 +49,20 @@ export function editApi(editForm) {
         params: editForm,
     })
 }
+
+export function top5_ArchiveApi() {
+    return request({
+        url: '/article/top5_archive',
+        method: 'GET',
+    })
+}
+
+export function getArticlesByArchive(yearMonth) {
+    return request({
+        url: '/article/getArticlesByArchive',
+        method: 'POST',
+        params: {
+            yearMonth: yearMonth,
+        }
+    })
+}

@@ -20,6 +20,8 @@ import 'nprogress/nprogress.css' //这个样式必须引入
 
 // highlightjs
 import hljs from 'highlight.js';
+// Echarts
+import * as echarts from 'echarts';
 
 VMdEditor.use(githubTheme, {
     Hljs: hljs,
@@ -29,6 +31,8 @@ const app = createApp(App);
 for (const [key, component] of Object.entries(ElIcons)) {
     app.component(key, component)
 }
+
+app.config.globalProperties.$echarts = echarts;
 
 app.use(router)
     .use(store)

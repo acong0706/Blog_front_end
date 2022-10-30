@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import MainExceptContent from "@/components/MainExceptContent";
+import MainExceptContent from "@/views/MainExceptContent";
 import 'element-plus/theme-chalk/display.css'
 import VMdEditor from "@kangc/v-md-editor"
 import {ElMessage} from "element-plus";
@@ -145,6 +145,8 @@ export default {
           }
           this.form.id = this.item
           this.form.date = this.timestampToTime(new Date().getTime())
+          this.form.publishDate = this.form.date
+          this.form.editDate = this.form.date
           this.form.author = window.localStorage.getItem("username")
           this.form.oldTags = this.arrayChange(this.form.oldTags)
           this.form.beforeTags = this.arrayChange(this.form.beforeTags)

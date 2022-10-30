@@ -31,18 +31,9 @@
           <label><el-icon><Clock /></el-icon>于&nbsp;{{ date }}&nbsp;发布</label>
         </el-col>
       </el-row>
-      <el-row class="hidden-md-and-up" style="margin-bottom: 5px;" v-show="dateShow">
-        <el-col :xs="24" :sm="24">
-          <label><el-icon><Clock /></el-icon>于&nbsp;{{ editDate }}&nbsp;修改</label>
-        </el-col>
-      </el-row>
       <el-row>
-        <el-col :xs="24" :sm="24" :md="14" :lg="14" :xl="14">
-          标签：
-          <el-tag v-for="tag in tags" class="tag">{{ tag }}</el-tag>
-        </el-col>
-        <el-col class="hidden-sm-and-down" :md="10" :lg="10" :xl="10" v-show="dateShow">
-          <label><el-icon><Clock /></el-icon>于&nbsp;{{ editDate }}&nbsp;修改</label>
+        <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+          标签：<el-tag v-for="tag in tags" class="tag">{{ tag }}</el-tag>
         </el-col>
       </el-row>
     </el-card>
@@ -73,7 +64,6 @@ export default {
       views: 1,
       tags: [],
       show: false,
-      dateShow: true,
     }
   },
   created() {
@@ -84,10 +74,23 @@ export default {
   mounted() {
     document.addEventListener('visibilitychange',function(e){
       let state = document.visibilityState
-      if(state == 'visible'){
-        let username = window.localStorage.getItem("username")
-        if (username == undefined) {
-          location.reload()
+      if(state === 'visible'){
+        let state = document.visibilityState
+        if(state === 'visible'){
+          let login = window.localStorage.getItem('login')
+          if (login === 'null') {
+            let username = window.localStorage.getItem("username")
+            if (username !== null) {
+              location.reload()
+              window.localStorage.setItem('login', 'login')
+            }
+          } else {
+            let username = window.localStorage.getItem("username")
+            if (username === null) {
+              location.reload()
+              window.localStorage.setItem('login', 'null')
+            }
+          }
         }
       }
     });
@@ -102,9 +105,6 @@ export default {
       this.author = this.article.author
       this.date = this.article.publishDate
       this.editDate = this.article.editDate
-      if (this.editDate === this.date) {
-        this.dateShow = false
-      }
       this.tags = this.article.tags.split(",")
       this.views = this.article.views
       document.title = this.title

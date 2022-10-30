@@ -1,4 +1,10 @@
 <template>
+  <div style="margin-bottom: 7px;" v-show="msgShow">
+    <el-breadcrumb separator="/">
+      <el-breadcrumb-item>搜索</el-breadcrumb-item>
+      <el-breadcrumb-item>[&nbsp;{{msg}}&nbsp;]&nbsp;————&nbsp;搜索到&nbsp;{{pageNum}}&nbsp;条数据</el-breadcrumb-item>
+    </el-breadcrumb>
+  </div>
   <el-card v-for="article in currentArticles" style="margin-bottom: 7px;border-radius: 10px;">
     <h2 style="margin-bottom: 5px;cursor: pointer;">
       <a @click="goBlogPage(article.id)">{{ article.title }}</a>
@@ -37,6 +43,7 @@ export default {
       currentArticles: [],
       numOfPage: 10,
       msg: '',
+      msgShow: false,
     }
   },
   created() {
@@ -94,6 +101,7 @@ export default {
     },
     async getArticles() {
       this.articles = await this.$store.dispatch('article/getArticles')
+      console.log(this.articles)
       for (let i = 0; i < this.articles.length; i++) {
         this.articles[i].tags = this.articles[i].tags.split(",")
       }
@@ -109,16 +117,18 @@ export default {
       }
     },
     selectSomeArticles() {
+      this.msgShow = true
       for (let i = 0; i < this.articles.length; i++) {
         if (this.articles[i].title.includes(this.msg))
           this.selectArticles.push(this.articles[i])
       }
       this.pageNum = this.selectArticles.length
-      ElNotification({
-        title: '搜索结果',
-        message: '搜索到 ' + this.pageNum + ' 条数据',
-        type: 'success',
-      })
+      // ElNotification({
+      //   title: '搜索结果',
+      //   message: '搜索到 ' + this.pageNum + ' 条数据',
+      //   type: 'success',
+      //   position: 'bottom-right',
+      // })
       for (let i = 0; i < this.numOfPage && i < this.selectArticles.length; i++) {
         this.currentArticles.push(this.selectArticles[i])
       }

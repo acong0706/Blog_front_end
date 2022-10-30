@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import MainExceptContent from "@/components/MainExceptContent";
+import MainExceptContent from "@/views/MainExceptContent";
 import 'element-plus/theme-chalk/display.css'
 import VMdEditor from "@kangc/v-md-editor"
 import {ElMessage, ElMessageBox} from "element-plus";
@@ -159,8 +159,6 @@ export default {
             type: 'warning'
           })
         } else {
-          // console.log(this.chooseTags)
-          // console.log(this.arrayChange(this.chooseTags))
           for (let i = 0; i < this.chooseTags.length; i++) {
             if (this.optionsForChoose.includes(this.chooseTags[i])) {
               this.form.oldTags.push(this.chooseTags[i])
@@ -169,9 +167,13 @@ export default {
             }
           }
           this.form.date = this.timestampToTime(new Date().getTime())
+          this.form.publishDate = this.form.date
+          this.form.editDate = this.form.date
           this.form.author = window.localStorage.getItem("username")
           this.form.oldTags = this.arrayChange(this.form.oldTags)
           this.form.newTags = this.arrayChange(this.form.newTags)
+          this.form.removeTags = this.arrayChange([])
+          this.form.beforeTags = this.arrayChange([])
           console.log(this.form)
           await this.$store.dispatch('article/publish', this.form)
           this.form.oldTags = []

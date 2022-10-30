@@ -14,6 +14,7 @@ import HelloWorld from "@/views/HelloWorld";
 import {ElMessage} from "element-plus";
 import NProgress from "nprogress";
 import Edit from "@/views/Edit";
+import archive from "@/components/Archive";
 
 const routes = [
     {
@@ -27,6 +28,11 @@ const routes = [
             {
                 path: '/',
                 component: mainContent,
+                requireAuth: false,
+            },
+            {
+                path: '/archive',
+                component: archive,
                 requireAuth: false,
             },
             {

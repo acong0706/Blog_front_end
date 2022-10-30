@@ -28,7 +28,7 @@ import mainHeader from "@/components/mainHeader";
 
 export default {
   name: "MainBesidesContent",
-  components: { mainHeader, },
+  components: {mainHeader,},
   data() {
     return {
       date: this.nowTime(new Date())
@@ -43,11 +43,11 @@ export default {
   methods: {
     nowTime(date) {
       let yy = date.getFullYear()
-      let mm = date.getMonth()+1
+      let mm = date.getMonth() + 1
       let dd = date.getDate()
       let hh = date.getHours()
-      let mf = date.getMinutes()<10 ? '0'+date.getMinutes() : date.getMinutes()
-      let ss = date.getSeconds()<10 ? '0'+date.getSeconds() : date.getSeconds()
+      let mf = date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
+      let ss = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds()
       let time = yy + '年' + mm + '月' + dd + '日' + hh + '时' + mf + '分' + ss + '秒'
       return time
     }
@@ -65,21 +65,25 @@ export default {
   background: rgb(209, 239, 248);
   height: 100%;
 }
+
 #headerOfMainPage {
   padding: 0;
   height: auto;
 }
+
 #mainOfMainPage {
   padding: 0;
   display: flex;
   justify-content: center;
 }
+
 #contentOfMainPage {
   margin-top: 15px;
   margin-bottom: 10px;
 }
+
 #footerOfMainPage {
-  background-color: rgb(245,250,250);
+  background-color: rgb(245, 250, 250);
   text-align: center;
   height: auto;
   padding-top: 15px;
